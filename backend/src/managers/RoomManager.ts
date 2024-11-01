@@ -57,7 +57,7 @@ export class RoomManager {
             return 
         }
         const receivingUser = room.user1.socket.id===senderSocketId ? room.user2 : room.user1
-        console.log("In On answer")
+        // console.log("In On answer")
         console.log(receivingUser.name)
         receivingUser.socket.emit("answer", {
             roomId,
@@ -72,7 +72,7 @@ export class RoomManager {
     onIceCandidate(roomId : string, candidate : RTCIceCandidate, senderSocketId : string) {
         const room  = this.room.get(roomId)
         const receiver  = senderSocketId===room?.user1.socket.id ? room?.user2 : room?.user1
-        console.log("ice candidate send")
+        // console.log("ice candidate send")
         receiver?.socket.emit("addIceCandidate", {
             candidate,
             roomId,

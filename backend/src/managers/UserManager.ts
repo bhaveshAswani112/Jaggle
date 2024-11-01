@@ -19,7 +19,7 @@ export class UserManager {
         this.roomManager = new RoomManager()
     }
     addPerson(name : string, socket : Socket) {
-        console.log(`${name} in addPerson`)
+        // console.log(`${name} in addPerson`)
         this.users.push({
             name,socket
         })
@@ -36,14 +36,14 @@ export class UserManager {
     }
 
     initHandlers(socket : Socket) {
-        console.log(`I am in initHandlers`)
+        // console.log(`I am in initHandlers`)
         socket.on("offer", ({roomId, sdp} : {roomId : string, sdp : string}) => {
-            console.log("offer received")
+            // console.log("offer received")
             // console.log(roomId)
             this.roomManager.onOffer(roomId.toString(),sdp,socket.id)
         })
         socket.on("answer", ({roomId, sdp} : {roomId : string, sdp : string}) => {
-            console.log("answer received")
+            // console.log("answer received")
             this.roomManager.onAnswer(roomId.toString(),sdp,socket.id)
         })
 
@@ -54,7 +54,7 @@ export class UserManager {
     }
 
     clearQueue() {
-        console.log(`I am in clearQueue`)
+        // console.log(`I am in clearQueue`)
         if(this.queue.length<2)return
         const id1 = this.queue.pop()
         const id2 = this.queue.pop()
