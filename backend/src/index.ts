@@ -23,7 +23,7 @@ let userManager : UserManager = new UserManager()
 io.on("connection" , (socket : Socket) => {
     // console.log("User connected")
     socket.on("sendName" , ({name} : {name : string}) => {
-        console.log("Hello, I am in sendName")
+        // console.log("Hello, I am in sendName")
         userManager.addPerson(name,socket)
     })
 

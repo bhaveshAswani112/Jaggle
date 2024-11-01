@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { io, Socket } from "socket.io-client";
+import { Button } from "./ui/button";
 
 function Room({
     name,
@@ -17,6 +18,7 @@ function Room({
     const [receiverPC, setReceiverPC] = useState<RTCPeerConnection | undefined>();
     const localVideoRef = useRef<HTMLVideoElement | null>(null);
     const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
+    const [resetRoom,setResetRoom] = useState<Boolean>(false);
 
     useEffect(() => {
         const URL = import.meta.env.VITE_SOCKET_URL;
@@ -45,15 +47,21 @@ function Room({
             socket?.emit("disconnectingUser", { roomId });
             socket?.disconnect();
         };
-    }, [name,localAudioTrack,localVideoTrack]);
+    }, [name,localAudioTrack,localVideoTrack,resetRoom]);
+
+    function goToNext() {
+        setResetRoom(prev => !prev)
+    }
 
     return (
         <div className="h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
             <div className="w-full max-w-4xl flex flex-col items-center space-y-4">
                 <h1 className="text-2xl font-bold text-gray-800">Welcome to the Room, {name}</h1>
-                <div className="flex flex-col md:flex-row md:space-x-6 space-y-4 md:space-y-0 w-full justify-center">
+
+                {/* Container for videos and button */}
+                <div className="flex flex-col md:flex-row md:space-x-4 w-full justify-center items-center">
                     {/* Local Video */}
-                    <div className="relative w-full md:w-1/2 rounded overflow-hidden bg-gray-200 shadow-md">
+                    <div className="relative w-full md:w-1/2 rounded overflow-hidden bg-gray-200 shadow-md mb-4 md:mb-0">
                         <video
                             ref={localVideoRef}
                             autoPlay
@@ -64,6 +72,16 @@ function Room({
                             Your Video
                         </div>
                     </div>
+
+                    {/* Centered Next Button */}
+                    {!lobby ? (
+                        <Button
+                            onClick={goToNext}
+                            className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-md shadow-md transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 md:mx-4"
+                        >
+                            Next
+                        </Button>
+                    ) : null}
 
                     {/* Remote Video */}
                     <div className="relative w-full md:w-1/2 rounded overflow-hidden bg-gray-200 shadow-md">
@@ -87,6 +105,8 @@ function Room({
         </div>
     );
 }
+
+
 
 
 function handleSocketOperations(
