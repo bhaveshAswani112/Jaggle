@@ -1,5 +1,4 @@
 import { useEffect, useState, useRef } from "react";
-import { useSearchParams } from "react-router-dom";
 import { io, Socket } from "socket.io-client";
 
 function Room({
@@ -40,8 +39,6 @@ function Room({
             localVideoTrack,
             localAudioTrack,
             remoteVideoRef,
-            senderPC,
-            receiverPC
         );
 
         return () => {
@@ -51,12 +48,46 @@ function Room({
     }, [name,localAudioTrack,localVideoTrack]);
 
     return (
-        <div>
-            <video ref={localVideoRef} autoPlay muted></video>
-            {!lobby ? <video ref={remoteVideoRef} autoPlay></video> : "Waiting for someone to connect..."}
+        <div className="h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
+            <div className="w-full max-w-4xl flex flex-col items-center space-y-4">
+                <h1 className="text-2xl font-bold text-gray-800">Welcome to the Room, {name}</h1>
+                <div className="flex flex-col md:flex-row md:space-x-6 space-y-4 md:space-y-0 w-full justify-center">
+                    {/* Local Video */}
+                    <div className="relative w-full md:w-1/2 rounded overflow-hidden bg-gray-200 shadow-md">
+                        <video
+                            ref={localVideoRef}
+                            autoPlay
+                            muted
+                            className="w-full h-auto rounded-t"
+                        ></video>
+                        <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 px-2 py-1 text-white text-sm rounded">
+                            Your Video
+                        </div>
+                    </div>
+
+                    {/* Remote Video */}
+                    <div className="relative w-full md:w-1/2 rounded overflow-hidden bg-gray-200 shadow-md">
+                        {!lobby ? (
+                            <video
+                                ref={remoteVideoRef}
+                                autoPlay
+                                className="w-full h-auto rounded-t"
+                            ></video>
+                        ) : (
+                            <div className="w-full h-full flex items-center justify-center text-gray-600 p-6 text-center">
+                                Waiting for someone to connect...
+                            </div>
+                        )}
+                        <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 px-2 py-1 text-white text-sm rounded">
+                            Remote Video
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
+
 
 function handleSocketOperations(
     socket: Socket | undefined,
@@ -68,8 +99,6 @@ function handleSocketOperations(
     localVideoTrack: MediaStreamTrack | null,
     localAudioTrack: MediaStreamTrack | null,
     remoteVideoRef: React.MutableRefObject<HTMLVideoElement | null>,
-    senderPC: RTCPeerConnection | undefined,
-    receiverPC: RTCPeerConnection | undefined
 ) {
     console.log("Before handleSocketOperations");
     if (!socket) {

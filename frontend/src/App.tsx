@@ -10,7 +10,6 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<Landing></Landing>}></Route>
-        
       </Routes>
     </BrowserRouter>
   )
