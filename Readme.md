@@ -76,7 +76,7 @@ cd jaggle
 ```bash
 cd backend
 npm install
-npm run dev  # Builds the TypeScript files and starts the server
+npm run build  # Builds the TypeScript files
 ```
 
 3. Set up the frontend:
