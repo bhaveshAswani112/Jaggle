@@ -11,11 +11,11 @@ function Room({
     localVideoTrack: MediaStreamTrack | null;
     localAudioTrack: MediaStreamTrack | null;
 }) {
-    const [socket, setSocket] = useState<Socket | undefined>(undefined);
+    const [_socket, setSocket] = useState<Socket | undefined>(undefined);
     const [lobby, setLobby] = useState(true);
     const [roomId, setRoomId] = useState<string>("");
-    const [senderPC, setSenderPC] = useState<RTCPeerConnection | undefined>();
-    const [receiverPC, setReceiverPC] = useState<RTCPeerConnection | undefined>();
+    const [_senderPC, setSenderPC] = useState<RTCPeerConnection | undefined>();
+    const [_receiverPC, setReceiverPC] = useState<RTCPeerConnection | undefined>();
     const localVideoRef = useRef<HTMLVideoElement | null>(null);
     const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
     const [resetRoom,setResetRoom] = useState<Boolean>(false);
@@ -153,6 +153,7 @@ function handleSocketOperations(
                 console.error("Failed to create offer", error);
             }
         };
+
     });
 
     socket.on("offer", async ({ roomId, sdp }: { roomId: string; sdp: string }) => {
@@ -172,16 +173,6 @@ function handleSocketOperations(
             remoteVideoRef.current.srcObject = stream;
         }
         setReceiverPC(pc);
-        pc.ontrack = ({ track }) => {
-            console.log("track received from receiver")
-            // if (remoteVideoRef.current) {
-            //     console.log("I am adding track")
-            //     const stream = remoteVideoRef.current.srcObject as MediaStream || new MediaStream();
-            //     stream.addTrack(track);
-            //     remoteVideoRef.current.srcObject = stream;
-            //     remoteVideoRef.current.play();
-            // }
-        };
         socket.emit("answer", { sdp: answerSdp.sdp, roomId });
         setTimeout(() => {
             console.log("in the timeout")
@@ -213,6 +204,7 @@ function handleSocketOperations(
                 console.log("Remote description set")
             }).catch(e => {
                 console.log("error in setting remote description")
+                console.log(e)
             })
             return pc
         })
