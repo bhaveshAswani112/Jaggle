@@ -18,7 +18,9 @@ const server = createServer(app)
 
 const io = new SocketIoServer(server,{
     cors : {
-        origin : cors_origin
+        origin : cors_origin,
+        credentials : true,
+        allowedHeaders: ["my-custom-header"],
     }
 })
 
